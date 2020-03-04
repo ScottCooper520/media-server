@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1>Audio List</h1>
+  <!-- Use 'audios' below instead of 'audio_list' when using non-class (function) views -->
+  {% if audio_list %}
+  <ul>
+    {% for audio in audio_list %}
+      <li>       
+        <a href="{{ audio.get_audio_id }}">{{audio.path}} / {{ audio.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no audio files in the library.</p>
+  {% endif %}       
+
+{% endblock %}

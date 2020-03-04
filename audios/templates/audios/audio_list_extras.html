@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Function to call as list entry metadata for each audio file is loaded -->
+<script>
+  // The approach I'm using is to create kendo.data.HierarchicalDataSource object
+  // that will render the audio selection list. This object format is used because
+  // it can be read by the Kendo PanelBar, which will allow hierarchical selection 
+  // of category/subcat1/subcat2/title, to keep things organized on the browser.
+  // See C:\BackupWork\ProjectsAllBak\KendoTests\PanelBarHierarchicalData\index2.html 
+  // for a working example of the object structure with sample audio titles. 
+  let audioList = [];
+  let cat0 = "";
+  let cat1 = "";
+  let cat2 = "";
+  function audioListFunction(path, title) {
+    let cats = path.split('/');
+    if (cats[0] && cats[0] == cat0) {
+      // Already created this category
+    }
+    if (cats[1] && cats[1] == cat1) {
+      // Already created this subcategory1
+    }
+    if (cats[2] && cats[2] == cat2) {
+      // Already created this subcategory2
+    }
+    // console.log("Now running audioListFunction. Path = " + path + "; Title = " + title);
+    // Create new category
+    if (cats && cats.length > 0 && cats[0] != ".") { // No root "." audios allowed.
+
+      if (cats[1] && !cats[2]) {
+
+        audioList.push({
+          CategoryName: cats[0],
+          Subcats1: [
+            {
+            Subcats1Name: cats[1],
+            Subcats2: [{
+              Subcats2Name: "All Titles",
+              Titles: [
+                {
+                  Title: title
+                }
+              ]
+            }]
+            }
+          ]
+        });
+        audioList.seg1 = [];
+        audioList.seg2 = [];
+        audioList.seg0.push(audioList.seg1);
+        audioList.seg1.push(audioList.seg2);
+        audioList.seg2.push('{ text: "' + title + '" }');
+        console.log("Seg2 = " + audioList.seg2[audioList.seg2.length-1]);
+      }
+      else { // Have three segs
+        console.log("Seg0 = " + segs[0]);
+        console.log("Seg1 = " + segs[1]);
+        console.log("Seg2 = " + segs[2]);
+        audioList.seg0 = [];
+        audioList.seg1 = [];
+        audioList.seg2 = [];
+        audioList.seg0.push(audioList.seg1);
+        audioList.seg1.push(audioList.seg2);
+        audioList.seg2.push('{ text: "' + title + '" }');
+        console.log("Seg2 = " + audioList.seg2[audioList.seg2.length-1]);
+      }
+    }
+  }
+    // Build json data that will run with multi-level accordian control.
+    // audioList.Conan = [];
+    // audioList.Conan.push('{ text: "' + title + '" }');
+
+  //};
+
+  function showPanelBar() {
+    var data = [{
+        CategoryName: "Conan",
+        Subcats1: [
+            {
+                Subcats1Name: "ComingOfConan",
+                Subcats2: [{
+                    Subcats2Name: "All Titles",
+                    Titles: [
+                        { Title: "01-TheFrostGiantsDaughter" },
+                        { Title: "02-DevilInIron" },
+                        { Title: "03-TowerOfTheElephant" }
+                    ]
+                }]
+            },
+            {
+                Subcats1Name: "BloodyCrownOfConan",
+                Subcats2: [{
+                    Subcats2Name: "All Titles",
+                    Titles: [
+                        { Title: "01-AWitchShallBeBorn" },
+                        { Title: "02-HourOfTheDragon" }
+                    ]
+                }]
+            }
+        ]
+    },
+    {
+        CategoryName: "Bond",
+        Subcats1: [{
+            Subcats1Name: "Goldfinger",
+            Subcats2: [{
+                Subcats2Name: "Happenstance",
+                Titles: [
+                    {
+                        Title: "01-ReflectionsInDoubleBourbon"
+                    }
+                ]
+            }]
+        }]
+    }
+    ];
+
+    var Titles = {
+        schema: {
+            data: "Titles"
+        }
+    };
+
+    var Subcats2 = {
+        schema: {
+            data: "Subcats2",
+            model: {
+                children: Titles
+            }
+        }
+    };
+
+    var Subcats1 = {
+        schema: {
+            data: "Subcats1",
+            model: {
+                children: Subcats2
+            }
+        }
+    };
+
+    var categoriesDataSource = new kendo.data.HierarchicalDataSource({
+        data: data,
+        schema: {
+            model: {
+                children: Subcats1 // Not sure why Subcats2 not required...
+            }
+        }
+    });
+
+    $("#panelbar-left").kendoPanelBar({
+            dataSource: categoriesDataSource,
+            dataTextField: ["CategoryName", "Subcats1Name", "Subcats2Name", "Title"]
+        });
+  }
+</script>
+
+<div id="example">
+  <div class="demo-section k-content">
+      <h4>Audio Books</h4>
+      <div id="panelbar-left"></div>
+  </div>
+  <style>
+    #example {
+        text-align: center;
+    }
+  
+    .demo-section {
+        display: inline-block;
+        vertical-align: top;
+        text-align: left;
+        margin: 0 2em;
+        min-width: 350px;
+    }
+  </style>
+</div>  
+
+  <h1>Audio List</h1>
+  <!-- Use 'audios' below instead of 'audio_list' when using non-class (function) views -->
+  {% if audio_list %}
+  <ul>
+    {% for audio in audio_list %}
+      <li>       
+        <a href="{{ audio.get_audio_id }}">{{audio.path}} / {{ audio.title }}</a>
+        <script>audioListFunction("{{audio.path}}", "{{audio.title}}")</script>
+      </li>
+    {% endfor %}
+    <script>showPanelBar()</script>
+  </ul>
+  {% else %}
+    <p>There are no audio files in the library.</p>
+  {% endif %}       
+
+{% endblock %}

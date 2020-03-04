@@ -1,0 +1,74 @@
+<!--This file shows some working ideas I was experimenting with... -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Title: {{ audio.title }}</h1>
+
+  <!-- author detail link not yet defined -->
+  <p><strong>Author:</strong> <a href="{% url 'author-detail' audio.author.pk %}">{{ audio.author }}</a></p> 
+  <p><strong>Title:</strong> <a href="">{{ audio.title }}</a></p> 
+  <!-- <p><strong>Track:</strong> <a href="">{{ audio.track }}</a></p> -->
+
+  <audio controls>
+    <source id="audioSource" src=""></source>
+  </audio>
+
+  <!-- Send the title to the JS function, and use it to build url to audio -->
+  <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
+    onclick='playMusic("{{ audio.title }}")'>Click to Play Audio</button>
+    <!-- onclick='playAudio("{{ audio.title }}")'>Click to Play Audio</button> -->
+    <!-- onclick='playAudio("{{ track }}", "{{ audio.title }}")'>Click to Play Audio</button> -->
+    <!-- OK onclick='playAudio("{{ audio.track }}")'>Click to Play Audio</button> -->
+    <!-- onclick='playAudio()'>Click to Play Audio</button> -->
+
+  <!-- <div>   
+    <audio webkit-playsinline="true" allow="autoplay" autoplay="true">
+      <source id="audioSource" src="http://127.0.0.1:8000/static/QuickKidsGoodnight.mp3"></source>
+    </audio>
+  </div> -->
+
+  <!-- OK -->
+<!-- <div>My space image
+  <img src="http://127.0.0.1:8000/static/space.jpeg"> 
+</div> -->
+
+<script>
+  // function playAudio(title) {
+  //   console.log("Now playing audio. Title = " + title);
+  //   playMusic(title);
+  // }
+
+  // Self-invoke to activate click handler above.
+  (function playAudio() {
+    console.log("Now playing audio.");
+    $("#buttonId1").trigger('click');
+  })();
+
+  function playMusic(title) {
+        let source = document.getElementById("audioSource");
+        // OK track = "http://127.0.0.1:8000/audios/scotty/frog_lillypad.mp3";
+        track = "http://127.0.0.1:8000/audios/scotty/" + title + ".mp3";
+        if (track) {
+            // OK source.src = "/static/SiT2.mp3";
+            source.src = track;
+        }
+        else {
+          console.log("No track found");
+        }
+        setTimeout(() => {
+        console.log("In playMusic()");
+        let v = document.getElementsByTagName("audio")[0];
+        v.load();
+        v.play();
+        }, 100 );
+    }
+
+    function stopMusic() {
+        console.log("In stopMusic()");
+        var v = document.getElementsByTagName("audio")[0];
+        v.pause();
+    }
+</script>
+
+{% endblock %}
+

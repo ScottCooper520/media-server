@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Title: {{ audio.title }}</h1>
+
+  <p><strong>Author:</strong> <a href="{% url 'author-detail' audio.author.pk %}">{{ audio.author }}</a></p> 
+  <p><strong>Title:</strong> <a href="">{{ audio.title }}</a></p> 
+
+  <audio controls>
+    <source id="audioSource" src=""></source>
+  </audio>
+
+  <!-- Send the path & title to the JS function, and use it to build url to audio -->
+  <!-- Invoke this with trigger so no need for actual button. Use audio control -->
+  <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
+    onclick='playMusic("{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
+    
+    
+<script>
+  // Self-invoke to activate click handler above.
+  (function playAudio() {
+    console.log("Now playing audio.");
+    $("#buttonId1").trigger('click');
+  })();
+
+  // This function calls the url that returns the actual audio file.
+  // So, browser url 127.0.0.1:8000/audios/audios/# renders this template (with relevant model instance).
+  // This model instance is used to get the title, and that is used for the url to get the audio. 
+    function playMusic(path, title) {
+        let source = document.getElementById("audioSource");
+        if (!path || path == "None") {
+          path = "";
+        }
+        track = "http://127.0.0.1:8000/audios/getaudio/" + path + "/" + title;
+        if (track) {
+            source.src = track;
+        }
+        else {
+          console.log("No track found");
+        }
+        setTimeout(() => {
+        console.log("In playMusic()");
+        let v = document.getElementsByTagName("audio")[0];
+        v.load();
+        v.play();
+        }, 100 );
+    }
+
+    function stopMusic() {
+        console.log("In stopMusic()");
+        var v = document.getElementsByTagName("audio")[0];
+        v.pause();
+    }
+</script>
+
+{% endblock %}
+

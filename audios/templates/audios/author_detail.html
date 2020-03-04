@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Author Details</h1>
+
+  <p><strong>First Name:</strong> <a href="">{{ author.first_name }}</a></p> 
+  <p><strong>Last Name:</strong> <a href="">{{ author.last_name }}</a></p> 
+
+  <!-- No direct ref to audio, but Django automatically adds a reverse-reference 
+  that can be accessed using "model_set", in this case, "audio_set". Is this a 
+  freebie due to the many-to-one relationship between Author and Audio? -->
+  <h1>Audio List ({{ author.audio_set.all.count }})</h1>
+  <dl>
+    {% for audio in author.audio_set.all %}
+      <dt><a href="{% url 'audio-detail' audio.pk %}">{{audio.title}}</a></dt>
+    {% endfor %}
+    </dl>
+
+{% endblock %}
