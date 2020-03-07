@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from audios.models import Audio, Author
 from django.views import generic
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, JsonResponse
 import pathlib
 import os
 
@@ -130,3 +130,12 @@ def getAudioFilePath3(request, path1, path2, path3, filename):
     
     response = FileResponse(open(path, "rb"))
     return response
+
+# This returns path/title to support auto-play of next track.
+def getPathTitle(request, pk):
+    audio = get_object_or_404(Audio, pk=pk)
+    data = {
+        'path': audio.path,
+        'title': audio.title
+    }
+    return JsonResponse(data)

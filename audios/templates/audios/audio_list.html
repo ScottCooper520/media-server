@@ -39,7 +39,7 @@
       subcats1Name = cats[1];
       addSubcat1(cats[0], subcats1Name);
     }
-    // If cats[1] does not exist and this is forst time, 
+    // If cats[1] does not exist and this is first time, 
     // give it a default name.
     else if (!cats[1] && subcats1Name != "Category1") {
       subcats1Name = "Category1";
@@ -56,7 +56,7 @@
       subcats2Name = cats[2];
       addSubcat2(cats[0], subcats1Name, subcats2Name);
     }
-    // If cats[2] does not exist and this is forst time, 
+    // If cats[2] does not exist and this is first time, 
     // give it a default name.
     else if (!cats[2] && subcats2Name != "All Titles") {
       subcats2Name = "All Titles";
@@ -71,13 +71,13 @@
 
     // Always add title to last cat/subcat1/2
     addTitle(id, title);
-
   }
 
   function addCategory(categoryName) {
     audioList.push({});
     audioList[audioList.length-1]["CategoryName"] = categoryName;
     audioList[audioList.length-1]["Subcats1"] = [];
+    subcats1Name = "";
   }
 
   function addSubcat1(categoryName, subcats1Name) {
@@ -86,6 +86,7 @@
     let subcat1Index = audioList[catIndex].Subcats1.length-1;
     audioList[catIndex].Subcats1[subcat1Index]["Subcats1Name"] = subcats1Name;
     audioList[catIndex].Subcats1[subcat1Index]["Subcats2"] = [];
+    subcats2Name = "";
   }
 
   function addSubcat2(categoryName, subcats1Name, subcats2Name) {
@@ -136,6 +137,7 @@
 
     var categoriesDataSource = new kendo.data.HierarchicalDataSource({
       data: audioList,
+      // sort: { field}
       schema: {
         model: {
           children: Subcats1 // Not sure why Subcats2 not required...

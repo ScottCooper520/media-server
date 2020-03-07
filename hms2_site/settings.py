@@ -25,8 +25,8 @@ SECRET_KEY = 'upxvb+dgff5!k(fv*d5byy2i_3_jxrpnci@(qakmf)^+djbrtu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Localhost, linuxserver, coophome
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.15', '192.168.1.5']
+# Localhost, linuxserver (nuc), linuxserver (latitude)
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.15', '192.168.1.16']
 
 
 # Application definition

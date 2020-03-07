@@ -13,7 +13,7 @@
   <!-- Send the path & title to the JS function, and use it to build url to audio -->
   <!-- Invoke this with trigger so no need for actual button. Use audio control -->
   <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
-    onclick='playMusic("{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
+    onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
     
     
 <script>
@@ -26,25 +26,37 @@
   // This function calls the url that returns the actual audio file.
   // So, browser url 127.0.0.1:8000/audios/audios/# renders this template (with relevant model instance).
   // This model instance is used to get the title, and that is used for the url to get the audio. 
-    function playMusic(path, title) {
+      function playMusic(pk, path, title) {
+        let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
+        // let baseUrl = "http://192.168.1.15:8000/audios/";  // For home server
         let source = document.getElementById("audioSource");
         if (!path || path == "None") {
           path = "";
         }
-        track = "http://127.0.0.1:8000/audios/getaudio/" + path + "/" + title;
+        track = baseUrl + "getaudio/" + path + "/" + title;
         if (track) {
-            source.src = track;
+          source.src = track;
         }
         else {
           console.log("No track found");
         }
         setTimeout(() => {
-        console.log("In playMusic()");
-        let v = document.getElementsByTagName("audio")[0];
-        v.load();
-        v.play();
-        }, 100 );
-    }
+          console.log("In playMusic()");
+          let v = document.getElementsByTagName("audio")[0];
+          v.load();
+          v.play();
+          // When track is done, play next (via pk)
+          v.onended = function () {
+            let id = parseInt(pk) + 1;
+            $.get( baseUrl + "getPathTitle/" + id, function( data ) {
+              if (data && data.path && data.title) {
+                console.log( "Play next track" );
+                playMusic(id, data.path, data.title);
+              }
+            });
+            }
+        }, 100);
+      }
 
     function stopMusic() {
         console.log("In stopMusic()");

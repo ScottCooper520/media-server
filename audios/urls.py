@@ -43,4 +43,6 @@ urlpatterns = [
     path ('getaudio/<str:path1>/<str:path2>/<str:filename>/', views.getAudioFilePath2, name='getAudioFilePath2'),
     # Audio from level 3 folder in share root.
     path ('getaudio/<str:path1>/<str:path2>/<str:path3>/<str:filename>/', views.getAudioFilePath3, name='getAudioFilePath3'),
+    # Get audio path/title given pk. Used to play next audio automatically.
+    path ('getPathTitle/<int:pk>', views.getPathTitle, name='getPathTitle'),
 ]
