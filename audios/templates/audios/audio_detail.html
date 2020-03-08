@@ -6,9 +6,13 @@
   <p><strong>Author:</strong> <a href="{% url 'author-detail' audio.author.pk %}">{{ audio.author }}</a></p> 
   <p><strong>Title:</strong> <a href="">{{ audio.title }}</a></p> 
 
-  <audio controls>
+  <!--OK <audio controls>
     <source id="audioSource" src=""></source>
-  </audio>
+  </audio> -->
+
+  <video controls>
+    <source id="audioSource" src=""></source>
+  </video>
 
   <!-- Send the path & title to the JS function, and use it to build url to audio -->
   <!-- Invoke this with trigger so no need for actual button. Use audio control -->
@@ -27,7 +31,7 @@
   // So, browser url 127.0.0.1:8000/audios/audios/# renders this template (with relevant model instance).
   // This model instance is used to get the title, and that is used for the url to get the audio. 
       function playMusic(pk, path, title) {
-        // let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
+        //let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
         let baseUrl = "http://192.168.1.15:8000/audios/";  // For home server
         let source = document.getElementById("audioSource");
         if (!path || path == "None") {
@@ -42,12 +46,13 @@
         }
         setTimeout(() => {
           console.log("In playMusic()");
-          let v = document.getElementsByTagName("audio")[0];
+          let v = document.getElementsByTagName("video")[0];
           v.load();
           v.play();
-          // When track is done, play next (via pk)
+          // When track is done, play next (via pk).
           v.onended = function () {
             let id = parseInt(pk) + 1;
+            // This is a JQ Ajax shorthand GET call.
             $.get( baseUrl + "getPathTitle/" + id, function( data ) {
               if (data && data.path && data.title) {
                 console.log( "Play next track" );
