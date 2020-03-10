@@ -87,7 +87,7 @@ class AuthorDetailView(generic.DetailView):
 
 # ToDo - These can be simplified into a single method that tests
 # and constructs path as needed.
-# Servve from share root.
+# Serve from share root.
 def getAudioFilePath0(request, filename):
     audio = pathlib.Path.home() / 'sharefromwindows' / filename
     path = ""
