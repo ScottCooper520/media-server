@@ -18,6 +18,9 @@
   <!-- Invoke this with trigger so no need for actual button. Use audio control -->
   <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
     onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
+
+  <button id="buttonId2" type="button" class="btn btn-info"
+    onclick='testSeek("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to go to 50 sec</button>
     
     
 <script>
@@ -31,7 +34,7 @@
   // So, browser url 127.0.0.1:8000/audios/audios/# renders this template (with relevant model instance).
   // This model instance is used to get the title, and that is used for the url to get the audio. 
       function playMusic(pk, path, title) {
-        //let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
+        // let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
         let baseUrl = "http://192.168.1.15:8000/audios/";  // For home server
         let source = document.getElementById("audioSource");
         if (!path || path == "None") {
@@ -49,6 +52,7 @@
           let v = document.getElementsByTagName("video")[0];
           v.load();
           v.play();
+          // setInterval(() => { console.log("Current Ttme in playMusic = " + v.currentTime); }, 10000);
           // When track is done, play next (via pk).
           v.onended = function () {
             let id = parseInt(pk) + 1;
@@ -63,9 +67,16 @@
         }, 100);
       }
 
+      function testSeek() {
+        console.log("In testSeek()");
+        var v = document.getElementsByTagName("video")[0];
+        // v.currentTime = 50;
+        // console.log("Current time in testSeek = " + v.currentTime);
+    }
+
     function stopMusic() {
         console.log("In stopMusic()");
-        var v = document.getElementsByTagName("audio")[0];
+        var v = document.getElementsByTagName("video")[0];
         v.pause();
     }
 </script>
