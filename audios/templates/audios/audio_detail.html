@@ -10,7 +10,7 @@
     <source id="audioSource" src=""></source>
   </audio> -->
 
-  <video controls>
+  <video id="vid" controls>
     <source id="audioSource" src=""></source>
   </video>
 
@@ -20,7 +20,7 @@
     onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
 
   <button id="buttonId2" type="button" class="btn btn-info"
-    onclick='testSeek("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to go to 50 sec</button>
+    onclick='testSeek("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>+ 1 Min.</button>
     
     
 <script>
@@ -52,7 +52,7 @@
           let v = document.getElementsByTagName("video")[0];
           v.load();
           v.play();
-          // setInterval(() => { console.log("Current Ttme in playMusic = " + v.currentTime); }, 10000);
+          //ok setInterval(() => { console.log("Current Time in playMusic = " + v.currentTime); }, 10000);
           // When track is done, play next (via pk).
           v.onended = function () {
             let id = parseInt(pk) + 1;
@@ -67,12 +67,24 @@
         }, 100);
       }
 
-      function testSeek() {
+ 
+    // Seems to work somewhat in FF (but not Chrome).
+    // Still need to work out details for seek.
+    function testSeek() {
         console.log("In testSeek()");
+
         var v = document.getElementsByTagName("video")[0];
-        // v.currentTime = 50;
-        // console.log("Current time in testSeek = " + v.currentTime);
-    }
+        v.pause();
+        //if (v.currentTime < 60 ) {
+          v.currentTime += 60; // Advance 1 minute
+        //}
+        v.play();
+        // var v = document.getElementsByTagName("#vid");
+        // v.oncanplay = function () {
+        //   console.log("Current time in testSeek = " + v.currentTime);
+        //   v.currentTime = 20;
+        // }
+      }
 
     function stopMusic() {
         console.log("In stopMusic()");
