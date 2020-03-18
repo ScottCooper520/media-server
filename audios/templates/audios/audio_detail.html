@@ -10,7 +10,7 @@
     <source id="audioSource" src=""></source>
   </audio> -->
 
-  <video id="vid" controls>
+  <video id="vid" preload="auto" controls>
     <source id="audioSource" src=""></source>
   </video>
 
@@ -18,10 +18,13 @@
   <!-- Invoke this with trigger so no need for actual button. Use audio control -->
   <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
     onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
-
+  <div>
   <button id="buttonId2" type="button" class="btn btn-info"
-    onclick='testSeek("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>+ 1 Min.</button>
-    
+    onclick='testSeek(true)'>+ 1 Min.</button>
+
+  <button id="buttonId3" type="button" class="btn btn-info"
+    onclick='testSeek(false)'>- 1 Min.</button>
+  </div>  
     
 <script>
   // Self-invoke to activate click handler above.
@@ -67,30 +70,55 @@
         }, 100);
       }
 
- 
+      function testSeek(isFwd) {
+        console.log("In testSeek()");
+        let inc = 60;
+        var v = document.getElementsByTagName("video")[0];
+        console.log("Time = " + v.currentTime);
+        let start = v.seekable.start(0);
+        let end = v.seekable.end(0.99);
+        if (isFwd) {
+            if (v.currentTime < end - inc) {
+                v.pause();
+                v.currentTime += 60; // Forward 1 minute
+                v.play();
+            }
+        }
+        else {
+            if (v.currentTime > start + inc) {
+                v.pause();
+                v.currentTime -= 60; // Backward 1 minute
+                v.play();
+            }
+        }
+    }
     // Seems to work somewhat in FF (but not Chrome).
     // Still need to work out details for seek.
-    function testSeek() {
-        console.log("In testSeek()");
+    // function testSeek() {
+    //     console.log("In testSeek()");
 
-        var v = document.getElementsByTagName("video")[0];
-        v.pause();
-        //if (v.currentTime < 60 ) {
-          v.currentTime += 60; // Advance 1 minute
-        //}
-        v.play();
-        // var v = document.getElementsByTagName("#vid");
-        // v.oncanplay = function () {
-        //   console.log("Current time in testSeek = " + v.currentTime);
-        //   v.currentTime = 20;
-        // }
-      }
+    //     var v = document.getElementsByTagName("video")[0];
+    //     let start = v.seekable.start();
+    //     let end = v.seekable.end();
 
-    function stopMusic() {
-        console.log("In stopMusic()");
-        var v = document.getElementsByTagName("video")[0];
-        v.pause();
-    }
+    //     if (v.currentTime < end ) {
+    //       v.pause();
+    //       v.currentTime += 60; // Advance 1 minute
+    //       v.play();
+    //     }
+        
+    //     // var v = document.getElementsByTagName("#vid");
+    //     // v.oncanplay = function () {
+    //     //   console.log("Current time in testSeek = " + v.currentTime);
+    //     //   v.currentTime = 20;
+    //     // }
+    //   }
+
+    // function stopMusic() {
+    //     console.log("In stopMusic()");
+    //     var v = document.getElementsByTagName("video")[0];
+    //     v.pause();
+    // }
 </script>
 
 {% endblock %}
