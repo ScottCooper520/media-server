@@ -6,24 +6,32 @@
   <p><strong>Author:</strong> <a href="{% url 'author-detail' audio.author.pk %}">{{ audio.author }}</a></p> 
   <p><strong>Title:</strong> <a href="">{{ audio.title }}</a></p> 
 
-  <!--OK <audio controls>
+  OK <audio preload="auto" controls>
     <source id="audioSource" src=""></source>
-  </audio> -->
+  </audio>
 
-  <video id="vid" preload="auto" controls>
+  <!-- <video id="vid" preload="auto" controls>
     <source id="audioSource" src=""></source>
-  </video>
+  </video> -->
+
+  <div class="buffered">
+    <span id="buffered-amount"></span>
+</div>
+
+<div class="progress">
+    <span id="progress-amount"></span>
+</div>
 
   <!-- Send the path & title to the JS function, and use it to build url to audio -->
   <!-- Invoke this with trigger so no need for actual button. Use audio control -->
   <button id="buttonId1" type="button" class="btn btn-info" style="display: none;"
-    onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Click to Play Audio</button>
+    onclick='playMusic("{{audio.pk}}", "{{audio.path}}", "{{ audio.title }}")'>Play Audio</button>
   <div>
   <button id="buttonId2" type="button" class="btn btn-info"
-    onclick='testSeek(true)'>+ 1 Min.</button>
+    onclick='testSeek(true)'>+</button>
 
   <button id="buttonId3" type="button" class="btn btn-info"
-    onclick='testSeek(false)'>- 1 Min.</button>
+    onclick='testSeek(false)'>-</button>
   </div>  
     
 <script>
@@ -36,87 +44,93 @@
   // This function calls the url that returns the actual audio file.
   // So, browser url 127.0.0.1:8000/audios/audios/# renders this template (with relevant model instance).
   // This model instance is used to get the title, and that is used for the url to get the audio. 
-      function playMusic(pk, path, title) {
-        // let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
-        let baseUrl = "http://192.168.1.15:8000/audios/";  // For home server
-        let source = document.getElementById("audioSource");
-        if (!path || path == "None") {
-          path = "";
-        }
-        track = baseUrl + "getaudio/" + path + "/" + title;
-        if (track) {
-          source.src = track;
-        }
-        else {
-          console.log("No track found");
-        }
-        setTimeout(() => {
-          console.log("In playMusic()");
-          let v = document.getElementsByTagName("video")[0];
-          v.load();
-          v.play();
-          //ok setInterval(() => { console.log("Current Time in playMusic = " + v.currentTime); }, 10000);
-          // When track is done, play next (via pk).
-          v.onended = function () {
-            let id = parseInt(pk) + 1;
-            // This is a JQ Ajax shorthand GET call.
-            $.get( baseUrl + "getPathTitle/" + id, function( data ) {
-              if (data && data.path && data.title) {
-                console.log( "Play next track" );
-                playMusic(id, data.path, data.title);
-              }
-            });
-            }
-        }, 100);
-      }
-
-      function testSeek(isFwd) {
-        console.log("In testSeek()");
-        let inc = 60;
-        var v = document.getElementsByTagName("video")[0];
-        console.log("Time = " + v.currentTime);
-        let start = v.seekable.start(0);
-        let end = v.seekable.end(0.99);
-        if (isFwd) {
-            if (v.currentTime < end - inc) {
-                v.pause();
-                v.currentTime += 60; // Forward 1 minute
-                v.play();
-            }
-        }
-        else {
-            if (v.currentTime > start + inc) {
-                v.pause();
-                v.currentTime -= 60; // Backward 1 minute
-                v.play();
-            }
-        }
+  function playMusic(pk, path, title) {
+    // let baseUrl = "http://127.0.0.1:8000/audios/";        // For laptop testing
+    let baseUrl = "http://192.168.1.15:8000/audios/";  // For home server
+    let source = document.getElementById("audioSource");
+    if (!path || path == "None") {
+      path = "";
     }
-    // Seems to work somewhat in FF (but not Chrome).
-    // Still need to work out details for seek.
-    // function testSeek() {
-    //     console.log("In testSeek()");
+    track = baseUrl + "getaudio/" + path + "/" + title;
+    if (track) {
+      source.src = track;
+    }
+    else {
+      console.log("No track found");
+    }
+    setTimeout(() => {
+      console.log("In playMusic()");
+      let v = document.getElementsByTagName("audio")[0];
+      v.load();
+      v.play();
+      //ok setInterval(() => { console.log("Current Time in playMusic = " + v.currentTime); }, 10000);
+      // When track is done, play next (via pk).
+      v.onended = function () {
+        let id = parseInt(pk) + 1;
+        // This is a JQ Ajax shorthand GET call.
+        $.get(baseUrl + "getPathTitle/" + id, function (data) {
+          if (data && data.path && data.title) {
+            console.log("Play next track");
+            playMusic(id, data.path, data.title);
+          }
+        });
+      }
+    }, 100);
+  }
 
-    //     var v = document.getElementsByTagName("video")[0];
-    //     let start = v.seekable.start();
-    //     let end = v.seekable.end();
+  function testSeek(isFwd) {
+    console.log("In testSeek()");
+    let inc = 60;
+    var v = document.getElementsByTagName("audio")[0];
+    console.log("Time = " + v.currentTime);
+    let start = v.seekable.start(0);
+    let end = v.seekable.end(0.99);
+    if (isFwd) {
+      if (v.currentTime < end - inc) {
+        v.pause();
+        v.currentTime += 60; // Forward 1 minute
+        v.play();
+      }
+    }
+    else {
+      if (v.currentTime > start + inc) {
+        v.pause();
+        v.currentTime -= 60; // Backward 1 minute
+        v.play();
+      }
+    }
+  }
+  window.onload = function () {
 
-    //     if (v.currentTime < end ) {
-    //       v.pause();
-    //       v.currentTime += 60; // Advance 1 minute
-    //       v.play();
-    //     }
-        
-    //     // var v = document.getElementsByTagName("#vid");
-    //     // v.oncanplay = function () {
-    //     //   console.log("Current time in testSeek = " + v.currentTime);
-    //     //   v.currentTime = 20;
-    //     // }
-    //   }
+    //var myAudio = document.getElementById('my-audio');
+    var myAudio = document.getElementsByTagName("audio")[0];
+
+    myAudio.addEventListener('progress', function () {
+      var duration = myAudio.duration;
+      console.log("progress duration = " + myAudio.duration);
+      console.log("buffered length = " + myAudio.buffered.length);
+      if (duration > 0) {
+        for (var i = 0; i < myAudio.buffered.length; i++) {
+          if (myAudio.buffered.start(myAudio.buffered.length - 1 - i) < myAudio.currentTime) {
+            document.getElementById("buffered-amount").style.width = (myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100 + "%";
+            break;
+          }
+        }
+      }
+    });
+
+    myAudio.addEventListener('timeupdate', function () {
+      var duration = myAudio.duration;
+      console.log("timeupdate duration = " + myAudio.duration);
+      if (duration > 0) {
+        document.getElementById('progress-amount').style.width = ((myAudio.currentTime / duration) * 100) + "%";
+      }
+    });
+  }
 
     // function stopMusic() {
     //     console.log("In stopMusic()");
-    //     var v = document.getElementsByTagName("video")[0];
+    //     var v = document.getElementsByTagName("audio")[0];
     //     v.pause();
     // }
 </script>
