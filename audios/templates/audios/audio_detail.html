@@ -6,13 +6,13 @@
   <p><strong>Author:</strong> <a href="{% url 'author-detail' audio.author.pk %}">{{ audio.author }}</a></p> 
   <p><strong>Title:</strong> <a href="">{{ audio.title }}</a></p> 
 
-  OK <audio preload="auto" controls>
+  <!-- <audio preload="auto" controls>
     <source id="audioSource" src=""></source>
-  </audio>
+  </audio> -->
 
-  <!-- <video id="vid" preload="auto" controls>
+  <video id="vid" preload="auto" controls>
     <source id="audioSource" src=""></source>
-  </video> -->
+  </video>
 
   <div class="buffered">
     <span id="buffered-amount"></span>
@@ -60,7 +60,7 @@
     }
     setTimeout(() => {
       console.log("In playMusic()");
-      let v = document.getElementsByTagName("audio")[0];
+      let v = document.getElementsByTagName("video")[0];
       v.load();
       v.play();
       //ok setInterval(() => { console.log("Current Time in playMusic = " + v.currentTime); }, 10000);
@@ -81,7 +81,7 @@
   function testSeek(isFwd) {
     console.log("In testSeek()");
     let inc = 60;
-    var v = document.getElementsByTagName("audio")[0];
+    var v = document.getElementsByTagName("video")[0];
     console.log("Time = " + v.currentTime);
     let start = v.seekable.start(0);
     let end = v.seekable.end(0.99);
@@ -103,7 +103,7 @@
   window.onload = function () {
 
     //var myAudio = document.getElementById('my-audio');
-    var myAudio = document.getElementsByTagName("audio")[0];
+    var myAudio = document.getElementsByTagName("video")[0];
 
     myAudio.addEventListener('progress', function () {
       var duration = myAudio.duration;
