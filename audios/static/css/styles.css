@@ -5,7 +5,7 @@
 }
 
 .buffered {
-    height: 20px;
+    height: 40px;
     position: relative;
     background: #555;
     width: 300px;
@@ -14,8 +14,8 @@
   #buffered-amount {
     display: block;
     height: 100%;
-    /* background-color: #777; */
-    background-color: red;
+    background-color: #777;
+    /* background-color: red; */
     width: 0;
   }
   

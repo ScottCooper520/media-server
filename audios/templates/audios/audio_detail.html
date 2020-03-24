@@ -29,15 +29,15 @@
 
   <div>
   <button id="buttonId2" type="button" class="btn btn-info"
-    onclick='testSeek(true)'>+</button>
+    onclick='testSeek(true)'>+Frwd+</button>
 
   <button id="buttonId3" type="button" class="btn btn-info"
-    onclick='testSeek(false)'>-</button>
+    onclick='testSeek(false)'>-Bkwd-</button>
   </div>  
 
   <div>
-  <button id="buttonId4" type="button" class="btn btn-info"
-    onclick='runDebug()'>Debug</button>
+  <!-- <button id="buttonId4" type="button" class="btn btn-info"
+    onclick='runDebug()'>Debug</button> -->
 
   <div id="debugData"></div>
   <div id="debugData2"></div>
@@ -106,8 +106,8 @@
     if (isFwd) {
       if (v.currentTime < end - inc) {
         v.pause();
-        v.currentTime += 30; // Forward 1 minute
-        data.append("Added 30. currentTime = " + v.currentTime + "<br>");
+        v.currentTime += 120; // Forward 1 minute
+        data.append("Added 120. currentTime = " + v.currentTime + "<br>");
         v.play();
       }
     }
@@ -115,8 +115,8 @@
     else {
       if (v.currentTime > start + inc) {
         v.pause();
-        v.currentTime -= 30; // Backward 1 minute
-        data.append("Subtracted 30. currentTime = " + v.currentTime + "<br>");
+        v.currentTime -= 120; // Backward 1 minute
+        data.append("Subtracted 120. currentTime = " + v.currentTime + "<br>");
         v.play();
       }
     }
@@ -125,22 +125,25 @@
       // data.append("currentTime = " + v.currentTime + "; duration = " + v.duration + "<br>");
   }
 
-  //ok window.onload = function () {
-  function runDebug() {
+  window.onload = function () {
+  // function runDebug() {
 
     //var myAudio = document.getElementById('my-audio');
     let myAudio = document.getElementsByTagName("video")[0];
+    let duration = myAudio.duration;
     let data2 = $("#debugData2");
     data2.html("<br>");
+    data2.append("duration = " + duration + "<br>"); 
     myAudio.addEventListener('progress', function () {
-      let duration = myAudio.duration;
+      data2.html("<br>");
+      // let duration = myAudio.duration;
       data2.append("duration = " + duration + "<br>");
       data2.append("buffered length = " + myAudio.buffered.length + "<br>");
       if (duration > 0) {
         for (var i = 0; i < myAudio.buffered.length; i++) {
           if (myAudio.buffered.start(myAudio.buffered.length - 1 - i) < myAudio.currentTime) {
-            document.getElementById("buffered-amount").style.width = (myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100 + "%";
-            data2.append("buffered amount = " + (myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100 + "%<br>");
+            document.getElementById('buffered-amount').style.width = ((myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100) + "%";
+            data2.append("buffered amount = " + ((myAudio.buffered.end(myAudio.buffered.length - 1 - i) / duration) * 100) + "%");
             break;
           }
         }
