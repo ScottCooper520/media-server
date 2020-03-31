@@ -80,6 +80,7 @@
         $.get(baseUrl + "getPathTitle/" + id, function (data) {
           if (data && data.path && data.title) {
             console.log("Play next track");
+            document.getElementById('buffered-amount').style.width = 0;
             playMusic(id, data.path, data.title);
           }
         });
