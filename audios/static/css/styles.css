@@ -8,6 +8,7 @@
     height: 40px;
     position: relative;
     /* background: #555; */
+    background-color: #e9ecef;
     width: 300px;
   }
   
@@ -15,7 +16,7 @@
     display: block;
     height: 100%;
     /* background-color: #777; */
-    background-color: blue;
+    background-color: cornflowerblue;
     width: 0;
   }
   
