@@ -10,6 +10,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    # Testing... path('', views.AudioListView.as_view(), name='index'),
+    # => Does show list as home, bit incorrect path after clicking on specific audio...
     # Following work with commented functions in views.py
     # path('audios/', views.audio_list, name='audios'),
     # path('audios/<int:pk>', views.audio_detail, name='audio-detail'),
