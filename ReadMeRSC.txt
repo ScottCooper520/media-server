@@ -1,3 +1,5 @@
+7/11/2020 - Got clone of media-server for Legion.
+
 2/28/2020 - Status
 ==================
 I essentially have everything working at this point. Some of the highlights include:
